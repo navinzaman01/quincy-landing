@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Quintendo</title>
+    <title>Quincy Miller</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
         
@@ -12,6 +12,26 @@
             padding: 0;
             box-sizing: border-box;
             image-rendering: pixelated;
+        }
+        
+        .site-instructions {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: #0f380f;
+            color: #9bbc0f;
+            text-align: center;
+            padding: 10px;
+            font-size: 0.5rem;
+            z-index: 10000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+            animation: instructionPulse 2s infinite;
+        }
+        
+        @keyframes instructionPulse {
+            0%, 100% { background: #0f380f; }
+            50% { background: #1a4d1a; }
         }
         
         body {
@@ -667,10 +687,11 @@
     </style>
 </head>
 <body>
+    <div class="site-instructions">🎮 USE GAME BOY CONTROLS TO NAVIGATE 🎮</div>
     <div class="konami-overlay" id="konamiOverlay">
         <div class="konami-text">
             ★ INFINITE LIVES! ★<br><br>
-            QUINTENDO MODE<br>
+            QUINCY<br>MILLER MODE<br>
             ACTIVATED!
         </div>
     </div>
@@ -681,11 +702,10 @@
                 <div class="screen-burn"></div>
                 <div class="chroma-glitch"></div>
                 <div class="game-content">
-                    <div class="nintendo-logo">NINTENDO®</div>
-                    <div class="instructions">USE D-PAD TO NAVIGATE</div>
+                    <div class="nintendo-logo">QUINTENDO</div>
                     
                     <div class="title-screen">
-                        <div class="title-name">QUINTENDO</div>
+                        <div class="title-name">QUINCY<br>MILLER</div>
                         <div class="press-start">PRESS START</div>
                     </div>
                     
