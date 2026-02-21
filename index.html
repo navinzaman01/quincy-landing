@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quincy Miller</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            image-rendering: pixelated;
+        }
+        
+        body {
+            font-family: 'Press Start 2P', monospace;
+            background: #1a1a1a;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            overflow: hidden;
+        }
+        
+        /* VHS static background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent 0px,
+                rgba(255,255,255,0.03) 1px,
+                transparent 2px
+            );
+            animation: vhsStatic 0.1s infinite;
+            pointer-events: none;
+            z-index: 999;
+        }
+        
+        @keyframes vhsStatic {
+            0% { transform: translate(0, 0); }
+            10% { transform: translate(-5%, -5%); }
+            20% { transform: translate(-10%, 5%); }
+            30% { transform: translate(5%, -10%); }
+            40% { transform: translate(-5%, 15%); }
+            50% { transform: translate(-10%, 5%); }
+            60% { transform: translate(15%, 0); }
+            70% { transform: translate(0, 10%); }
+            80% { transform: translate(-15%, 0); }
+            90% { transform: translate(10%, 5%); }
+            100% { transform: translate(5%, 0); }
+        }
+        
+        .gameboy-shell {
+            background: linear-gradient(145deg, #a0a8a5 0%, #7a827e 50%, #676d6a 100%);
+            border-radius: 15px 15px 80px 15px;
+            padding: 35px;
+            box-shadow: 
+                0 20px 60px rgba(0,0,0,0.6),
+                inset -3px -3px 10px rgba(0,0,0,0.3),
+                inset 3px 3px 10px rgba(255,255,255,0.2);
+            max-width: 480px;
+            width: 100%;
+            position: relative;
+            animation: shellGlitch 8s infinite;
+        }
+        
+        @keyframes shellGlitch {
+            0%, 90%, 100% { transform: translate(0, 0); }
+            92% { transform: translate(-2px, 1px); }
+            94% { transform: translate(2px, -1px); }
+            96% { transform: translate(-1px, 2px); }
+        }
+        
+        .screen-area {
+            background: #1a1a1a;
+            padding: 18px;
+            border-radius: 8px;
+            box-shadow: 
+                inset 0 4px 8px rgba(0,0,0,0.8),
+                0 -2px 4px rgba(255,255,255,0.1);
+            margin-bottom: 25px;
+            position: relative;
+        }
+        
+        .lcd-screen {
+            background: #9bbc0f;
+            aspect-ratio: 10 / 9;
+            position: relative;
+            overflow: hidden;
+            box-shadow: inset 0 0 60px rgba(0,0,0,0.15);
+        }
+        
+        /* CRT scanlines */
+        .lcd-screen::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(0,0,0,0.15) 0px,
+                rgba(0,0,0,0.15) 1px,
+                transparent 1px,
+                transparent 3px
+            );
+            pointer-events: none;
+            z-index: 15;
+            animation: scanlines 8s linear infinite;
+        }
+        
+        @keyframes scanlines {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(4px); }
+        }
+        
+        /* Dot matrix pattern */
+        .lcd-screen::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image: 
+                repeating-linear-gradient(0deg, rgba(0,0,0,0.03) 0px, rgba(0,0,0,0.03) 1px, transparent 1px, transparent 2px),
+                repeating-linear-gradient(90deg, rgba(0,0,0,0.03) 0px, rgba(0,0,0,0.03) 1px, transparent 1px, transparent 2px);
+            pointer-events: none;
+            z-index: 10;
+        }
+        
+        /* Screen burn effect */
+        .screen-burn {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at center, transparent 50%, rgba(0,0,0,0.15) 100%);
+            pointer-events: none;
+            z-index: 12;
+            animation: burnFlicker 4s infinite;
+        }
+        
+        @keyframes burnFlicker {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.85; }
+        }
+        
+        /* Chromatic aberration glitch */
+        .chroma-glitch {
+            position: absolute;
+            inset: 0;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(255,0,100,0.05) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(0,255,200,0.05) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 11;
+            animation: chromaShift 3s infinite;
+        }
+        
+        @keyframes chromaShift {
+            0%, 90%, 100% { opacity: 0; }
+            92% { opacity: 1; transform: translate(-1px, 1px); }
+            94% { opacity: 1; transform: translate(1px, -1px); }
+        }
+        
+        .game-content {
+            padding: 20px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            z-index: 5;
+        }
+        
+        .nintendo-logo {
+            text-align: center;
+            font-size: 0.5rem;
+            color: #0f380f;
+            margin-bottom: 8px;
+            letter-spacing: 4px;
+            animation: logoGlitch 10s infinite;
+        }
+        
+        @keyframes logoGlitch {
+            0%, 95%, 100% { 
+                transform: translate(0, 0);
+                text-shadow: none;
+            }
+            96% { 
+                transform: translate(-2px, 0);
+                text-shadow: 2px 0 #ff00ff, -2px 0 #00ffff;
+            }
+            97% { 
+                transform: translate(2px, 0);
+                text-shadow: -2px 0 #ff00ff, 2px 0 #00ffff;
+            }
+        }
+        
+        .title-screen {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        
+        .title-name {
+            font-size: 1.1rem;
+            color: #0f380f;
+            margin-bottom: 8px;
+            text-shadow: 
+                2px 2px 0 #306230,
+                0 0 20px rgba(155,188,15,0.5);
+            animation: titlePulse 2s infinite, titleGlitch 5s infinite;
+        }
+        
+        @keyframes titlePulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+        
+        @keyframes titleGlitch {
+            0%, 90%, 100% { 
+                filter: none;
+                transform: translate(0, 0) scale(1);
+            }
+            92% { 
+                filter: hue-rotate(90deg);
+                transform: translate(-3px, 2px) scale(1.02);
+            }
+            94% { 
+                filter: hue-rotate(-90deg);
+                transform: translate(3px, -2px) scale(0.98);
+            }
+            96% {
+                filter: invert(0.3);
+                transform: translate(-2px, -1px) scale(1.01);
+            }
+        }
+        
+        .press-start {
+            font-size: 0.5rem;
+            color: #306230;
+            animation: flash 1s infinite, startGlitch 7s infinite;
+        }
+        
+        @keyframes flash {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+        
+        @keyframes startGlitch {
+            0%, 85%, 100% { transform: translate(0, 0); }
+            87% { transform: translate(-10px, 0); }
+            89% { transform: translate(10px, 0); }
+            91% { transform: translate(-5px, 0); }
+        }
+        
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px;
+            background: rgba(15,56,15,0.2);
+            border: 2px solid #0f380f;
+            margin-bottom: 10px;
+            font-size: 0.4rem;
+            color: #0f380f;
+            animation: barGlitch 6s infinite;
+        }
+        
+        @keyframes barGlitch {
+            0%, 93%, 100% { opacity: 1; }
+            94% { opacity: 0.3; }
+            95% { opacity: 1; }
+            96% { opacity: 0.5; }
+        }
+        
+        .hp-bar {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .hp-block {
+            width: 8px;
+            height: 8px;
+            background: #0f380f;
+            animation: hpFlicker 1s infinite;
+        }
+        
+        .hp-block:nth-child(2) { animation-delay: 0.1s; }
+        .hp-block:nth-child(3) { animation-delay: 0.2s; }
+        .hp-block:nth-child(4) { animation-delay: 0.3s; }
+        .hp-block:nth-child(5) { animation-delay: 0.4s; }
+        
+        @keyframes hpFlicker {
+            0%, 90%, 100% { opacity: 1; }
+            95% { opacity: 0.3; }
+        }
+        
+        .menu-box {
+            background: rgba(15,56,15,0.15);
+            border: 3px solid #0f380f;
+            padding: 12px;
+            margin-top: 10px;
+            animation: boxDistort 4s infinite;
+        }
+        
+        @keyframes boxDistort {
+            0%, 88%, 100% { 
+                transform: skew(0deg, 0deg);
+                border-color: #0f380f;
+            }
+            90% { 
+                transform: skew(-1deg, 0deg);
+                border-color: #306230;
+            }
+            92% { 
+                transform: skew(1deg, 0deg);
+                border-color: #0f380f;
+            }
+        }
+        
+        .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 8px;
+            margin: 6px 0;
+            color: #0f380f;
+            text-decoration: none;
+            font-size: 0.6rem;
+            position: relative;
+            transition: all 0.05s;
+            background: rgba(155,188,15,0.3);
+            border: 2px solid transparent;
+        }
+        
+        .menu-item:hover {
+            background: rgba(15,56,15,0.6);
+            border-color: #0f380f;
+            animation: menuShake 0.1s infinite;
+            text-shadow: 1px 1px 0 #9bbc0f;
+        }
+        
+        @keyframes menuShake {
+            0%, 100% { transform: translate(0, 0); }
+            25% { transform: translate(-1px, 1px); }
+            50% { transform: translate(1px, -1px); }
+            75% { transform: translate(-1px, -1px); }
+        }
+        
+        .menu-item:hover::before {
+            content: '▶';
+            position: absolute;
+            left: -15px;
+            animation: arrowBounce 0.3s infinite;
+        }
+        
+        @keyframes arrowBounce {
+            0%, 100% { transform: translateX(0); }
+            50% { transform: translateX(4px); }
+        }
+        
+        .menu-item:active {
+            background: #0f380f;
+            color: #9bbc0f;
+            animation: pressEffect 0.1s;
+        }
+        
+        @keyframes pressEffect {
+            0% { transform: scale(1); }
+            50% { transform: scale(0.95); filter: brightness(1.5); }
+            100% { transform: scale(1); }
+        }
+        
+        .icon {
+            margin-right: 8px;
+            animation: iconSpin 10s infinite;
+        }
+        
+        @keyframes iconSpin {
+            0%, 95%, 100% { transform: rotate(0deg); }
+            96% { transform: rotate(-15deg); }
+            97% { transform: rotate(15deg); }
+        }
+        
+        /* Controls with glitch */
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+            padding: 0 15px;
+        }
+        
+        .dpad-container {
+            position: relative;
+            width: 70px;
+            height: 70px;
+            animation: dpadGlitch 9s infinite;
+        }
+        
+        @keyframes dpadGlitch {
+            0%, 91%, 100% { filter: none; }
+            92% { filter: hue-rotate(180deg); }
+            94% { filter: brightness(1.5); }
+        }
+        
+        .dpad {
+            position: absolute;
+            background: #2b2b2b;
+            box-shadow: 
+                inset -2px -2px 4px rgba(0,0,0,0.5),
+                inset 2px 2px 2px rgba(255,255,255,0.1);
+        }
+        
+        .dpad.horizontal {
+            width: 70px;
+            height: 22px;
+            top: 24px;
+            left: 0;
+        }
+        
+        .dpad.vertical {
+            width: 22px;
+            height: 70px;
+            top: 0;
+            left: 24px;
+        }
+        
+        .ab-buttons {
+            display: flex;
+            gap: 20px;
+            transform: rotate(-25deg);
+            animation: buttonFloat 3s infinite;
+        }
+        
+        @keyframes buttonFloat {
+            0%, 100% { transform: rotate(-25deg) translateY(0); }
+            50% { transform: rotate(-25deg) translateY(-2px); }
+        }
+        
+        .game-button {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, #a85a7e, #6b2d4a);
+            box-shadow: 
+                0 4px 0 #4a1f33,
+                inset -2px -2px 5px rgba(0,0,0,0.4),
+                inset 2px 2px 3px rgba(255,255,255,0.2);
+            position: relative;
+        }
+        
+        .game-button::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #2b2b2b;
+            font-size: 0.7rem;
+            font-weight: bold;
+        }
+        
+        .game-button.a::after { content: 'A'; }
+        .game-button.b::after { content: 'B'; }
+        
+        .power-indicator {
+            position: absolute;
+            bottom: 20px;
+            right: 25px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.4rem;
+            color: #4a4a4a;
+        }
+        
+        .led {
+            width: 8px;
+            height: 8px;
+            background: #ff3333;
+            border-radius: 50%;
+            box-shadow: 0 0 8px #ff3333;
+            animation: ledPulse 1s infinite;
+        }
+        
+        @keyframes ledPulse {
+            0%, 100% { 
+                box-shadow: 0 0 8px #ff3333, 0 0 15px #ff3333; 
+                opacity: 1; 
+                background: #ff3333;
+            }
+            50% { 
+                box-shadow: 0 0 3px #ff3333; 
+                opacity: 0.7; 
+                background: #cc0000;
+            }
+        }
+        
+        .brand {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 0.6rem;
+            color: #4a4a4a;
+            letter-spacing: 8px;
+            font-weight: bold;
+            animation: brandFlicker 8s infinite;
+        }
+        
+        @keyframes brandFlicker {
+            0%, 94%, 100% { opacity: 1; }
+            95% { opacity: 0.3; }
+            96% { opacity: 1; }
+            97% { opacity: 0.5; }
+        }
+        
+        @media (max-width: 600px) {
+            .gameboy-shell {
+                padding: 25px;
+            }
+            .title-name {
+                font-size: 0.9rem;
+            }
+            .menu-item {
+                font-size: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="gameboy-shell">
+        <div class="screen-area">
+            <div class="lcd-screen">
+                <div class="screen-burn"></div>
+                <div class="chroma-glitch"></div>
+                <div class="game-content">
+                    <div class="nintendo-logo">NINTENDO®</div>
+                    
+                    <div class="title-screen">
+                        <div class="title-name">QUINCY<br>MILLER</div>
+                        <div class="press-start">PRESS START</div>
+                    </div>
+                    
+                    <div class="status-bar">
+                        <div>LV.99</div>
+                        <div class="hp-bar">
+                            <span>HP</span>
+                            <div class="hp-block"></div>
+                            <div class="hp-block"></div>
+                            <div class="hp-block"></div>
+                            <div class="hp-block"></div>
+                            <div class="hp-block"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="menu-box">
+                        <a href="https://www.tiktok.com/@qmill3rtime" class="menu-item">
+                            <span class="icon">►</span>TIKTOK
+                        </a>
+                        <a href="https://youtube.com/@qmillertime?si=SI7kD5BhwHhloyFs&sub_confirmation=1" class="menu-item">
+                            <span class="icon">►</span>YOUTUBE
+                        </a>
+                        <a href="https://www.twitch.tv/qmillertime" class="menu-item">
+                            <span class="icon">►</span>TWITCH
+                        </a>
+                        <a href="https://instagram.com/qmillertime" class="menu-item">
+                            <span class="icon">►</span>INSTAGRAM
+                        </a>
+                        <a href="https://www.facebook.com/share/17GQvokyR5/?mibextid=wwXIfr" class="menu-item">
+                            <span class="icon">►</span>FACEBOOK
+                        </a>
+                        <a href="https://www.etsy.com/shop/QTimesArt" class="menu-item">
+                            <span class="icon">►</span>ETSY SHOP
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <div class="dpad-container">
+                <div class="dpad horizontal"></div>
+                <div class="dpad vertical"></div>
+            </div>
+            
+            <div class="ab-buttons">
+                <div class="game-button b"></div>
+                <div class="game-button a"></div>
+            </div>
+        </div>
+        
+        <div class="brand">GAME BOY</div>
+        <div class="power-indicator">
+            <div class="led"></div>
+            <span>POWER</span>
+        </div>
+    </div>
+</body>
+</html>
