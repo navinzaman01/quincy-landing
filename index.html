@@ -232,6 +232,22 @@
         }
         
         .nintendo-logo {
+        
+        .instructions {
+            text-align: center;
+            font-size: 0.35rem;
+            color: #306230;
+            margin-bottom: 8px;
+            padding: 4px;
+            border: 1px dashed #306230;
+            background: rgba(48,98,48,0.1);
+            animation: instructionBlink 2s infinite;
+        }
+        
+        @keyframes instructionBlink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
             text-align: center;
             font-size: 0.5rem;
             color: #0f380f;
@@ -666,6 +682,7 @@
                 <div class="chroma-glitch"></div>
                 <div class="game-content">
                     <div class="nintendo-logo">NINTENDO®</div>
+                    <div class="instructions">USE D-PAD TO NAVIGATE</div>
                     
                     <div class="title-screen">
                         <div class="title-name">QUINTENDO</div>
