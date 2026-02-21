@@ -15,8 +15,6 @@
         }
         
         body {
-    -webkit-overflow-scrolling: touch;
-    overflow-y: auto;
             font-family: 'Press Start 2P', monospace;
             background: #1a1a1a;
             min-height: 100vh;
@@ -25,6 +23,41 @@
             justify-content: center;
             padding: 20px;
             overflow: hidden;
+            -webkit-overflow-scrolling: touch;
+            overflow-y: auto;
+        }
+        
+        /* Konami code success overlay */
+        .konami-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(155,188,15,0.95);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            animation: konamiFlash 0.5s;
+        }
+        
+        .konami-overlay.active {
+            display: flex;
+        }
+        
+        @keyframes konamiFlash {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .konami-text {
+            font-size: 2rem;
+            color: #0f380f;
+            text-align: center;
+            animation: konamiBounce 1s infinite;
+        }
+        
+        @keyframes konamiBounce {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
         }
         
         /* VHS static background */
@@ -61,7 +94,6 @@
         }
         
         .gameboy-shell {
-    -webkit-overflow-scrolling: touch;
             background: linear-gradient(145deg, #a0a8a5 0%, #7a827e 50%, #676d6a 100%);
             border-radius: 15px 15px 80px 15px;
             padding: 35px;
@@ -73,6 +105,24 @@
             width: 100%;
             position: relative;
             animation: shellGlitch 8s infinite;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        .gameboy-shell.shake {
+            animation: shellShake 0.5s, shellGlitch 8s infinite;
+        }
+        
+        @keyframes shellShake {
+            0%, 100% { transform: translate(0, 0); }
+            10% { transform: translate(-5px, 5px) rotate(-1deg); }
+            20% { transform: translate(5px, -5px) rotate(1deg); }
+            30% { transform: translate(-5px, -5px) rotate(-1deg); }
+            40% { transform: translate(5px, 5px) rotate(1deg); }
+            50% { transform: translate(-5px, 5px) rotate(-1deg); }
+            60% { transform: translate(5px, -5px) rotate(1deg); }
+            70% { transform: translate(-5px, -5px) rotate(-1deg); }
+            80% { transform: translate(5px, 5px) rotate(1deg); }
+            90% { transform: translate(-2px, 2px) rotate(-0.5deg); }
         }
         
         @keyframes shellGlitch {
@@ -94,12 +144,12 @@
         }
         
         .lcd-screen {
-    -webkit-overflow-scrolling: touch;
             background: #9bbc0f;
             aspect-ratio: 10 / 9;
             position: relative;
             overflow: hidden;
             box-shadow: inset 0 0 60px rgba(0,0,0,0.15);
+            -webkit-overflow-scrolling: touch;
         }
         
         /* CRT scanlines */
@@ -170,15 +220,15 @@
         }
         
         .game-content {
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-    max-height: 100%;
             padding: 20px;
             height: 100%;
             display: flex;
             flex-direction: column;
             position: relative;
             z-index: 5;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            max-height: 100%;
         }
         
         .nintendo-logo {
@@ -298,6 +348,7 @@
         .hp-block:nth-child(3) { animation-delay: 0.2s; }
         .hp-block:nth-child(4) { animation-delay: 0.3s; }
         .hp-block:nth-child(5) { animation-delay: 0.4s; }
+        .hp-block:nth-child(6) { animation-delay: 0.5s; }
         
         @keyframes hpFlicker {
             0%, 90%, 100% { opacity: 1; }
@@ -305,14 +356,14 @@
         }
         
         .menu-box {
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-    max-height: 280px;
             background: rgba(15,56,15,0.15);
             border: 3px solid #0f380f;
             padding: 12px;
             margin-top: 10px;
             animation: boxDistort 4s infinite;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            max-height: 280px;
         }
         
         @keyframes boxDistort {
@@ -342,6 +393,19 @@
             transition: all 0.05s;
             background: rgba(155,188,15,0.3);
             border: 2px solid transparent;
+        }
+        
+        .menu-item.selected {
+            background: rgba(15,56,15,0.6);
+            border-color: #0f380f;
+            text-shadow: 1px 1px 0 #9bbc0f;
+        }
+        
+        .menu-item.selected::before {
+            content: '▶';
+            position: absolute;
+            left: -15px;
+            animation: arrowBounce 0.3s infinite;
         }
         
         .menu-item:hover {
@@ -407,6 +471,7 @@
             width: 70px;
             height: 70px;
             animation: dpadGlitch 9s infinite;
+            cursor: pointer;
         }
         
         @keyframes dpadGlitch {
@@ -437,6 +502,44 @@
             left: 24px;
         }
         
+        .dpad-btn {
+            position: absolute;
+            cursor: pointer;
+            user-select: none;
+        }
+        
+        .dpad-up {
+            width: 22px;
+            height: 24px;
+            top: 0;
+            left: 24px;
+        }
+        
+        .dpad-down {
+            width: 22px;
+            height: 24px;
+            bottom: 0;
+            left: 24px;
+        }
+        
+        .dpad-left {
+            width: 24px;
+            height: 22px;
+            top: 24px;
+            left: 0;
+        }
+        
+        .dpad-right {
+            width: 24px;
+            height: 22px;
+            top: 24px;
+            right: 0;
+        }
+        
+        .dpad-btn:active {
+            background: rgba(255,255,255,0.2);
+        }
+        
         .ab-buttons {
             display: flex;
             gap: 20px;
@@ -459,6 +562,15 @@
                 inset -2px -2px 5px rgba(0,0,0,0.4),
                 inset 2px 2px 3px rgba(255,255,255,0.2);
             position: relative;
+            cursor: pointer;
+        }
+        
+        .game-button:active {
+            transform: translateY(2px);
+            box-shadow: 
+                0 2px 0 #4a1f33,
+                inset -2px -2px 5px rgba(0,0,0,0.4),
+                inset 2px 2px 3px rgba(255,255,255,0.2);
         }
         
         .game-button::after {
@@ -527,7 +639,6 @@
         
         @media (max-width: 600px) {
             .gameboy-shell {
-    -webkit-overflow-scrolling: touch;
                 padding: 25px;
             }
             .title-name {
@@ -540,7 +651,15 @@
     </style>
 </head>
 <body>
-    <div class="gameboy-shell">
+    <div class="konami-overlay" id="konamiOverlay">
+        <div class="konami-text">
+            ★ INFINITE LIVES! ★<br><br>
+            QUINTENDO MODE<br>
+            ACTIVATED!
+        </div>
+    </div>
+
+    <div class="gameboy-shell" id="gameboyShell">
         <div class="screen-area">
             <div class="lcd-screen">
                 <div class="screen-burn"></div>
@@ -562,26 +681,27 @@
                             <div class="hp-block"></div>
                             <div class="hp-block"></div>
                             <div class="hp-block"></div>
+                            <div class="hp-block"></div>
                         </div>
                     </div>
                     
                     <div class="menu-box">
-                        <a href="https://www.tiktok.com/@qmill3rtime" class="menu-item">
+                        <a href="https://www.tiktok.com/@qmill3rtime" class="menu-item" data-sound="tiktok">
                             <span class="icon">►</span>TIKTOK
                         </a>
-                        <a href="https://youtube.com/@qmillertime?si=SI7kD5BhwHhloyFs&sub_confirmation=1" class="menu-item">
+                        <a href="https://youtube.com/@qmillertime?si=SI7kD5BhwHhloyFs&sub_confirmation=1" class="menu-item" data-sound="youtube">
                             <span class="icon">►</span>YOUTUBE
                         </a>
-                        <a href="https://www.twitch.tv/qmillertime" class="menu-item">
+                        <a href="https://www.twitch.tv/qmillertime" class="menu-item" data-sound="twitch">
                             <span class="icon">►</span>TWITCH
                         </a>
-                        <a href="https://instagram.com/qmillertime" class="menu-item">
+                        <a href="https://instagram.com/qmillertime" class="menu-item" data-sound="instagram">
                             <span class="icon">►</span>INSTAGRAM
                         </a>
-                        <a href="https://www.facebook.com/share/17GQvokyR5/?mibextid=wwXIfr" class="menu-item">
+                        <a href="https://www.facebook.com/share/17GQvokyR5/?mibextid=wwXIfr" class="menu-item" data-sound="facebook">
                             <span class="icon">►</span>FACEBOOK
                         </a>
-                        <a href="https://www.etsy.com/shop/QTimesArt" class="menu-item">
+                        <a href="https://www.etsy.com/shop/QTimesArt" class="menu-item" data-sound="etsy">
                             <span class="icon">►</span>ETSY SHOP
                         </a>
                     </div>
@@ -593,11 +713,15 @@
             <div class="dpad-container">
                 <div class="dpad horizontal"></div>
                 <div class="dpad vertical"></div>
+                <div class="dpad-btn dpad-up" id="dpad-up"></div>
+                <div class="dpad-btn dpad-down" id="dpad-down"></div>
+                <div class="dpad-btn dpad-left" id="dpad-left"></div>
+                <div class="dpad-btn dpad-right" id="dpad-right"></div>
             </div>
             
             <div class="ab-buttons">
-                <div class="game-button b"></div>
-                <div class="game-button a"></div>
+                <div class="game-button b" id="btn-b"></div>
+                <div class="game-button a" id="btn-a"></div>
             </div>
         </div>
         
@@ -607,5 +731,240 @@
             <span>POWER</span>
         </div>
     </div>
+
+    <script>
+        // D-pad controls
+        let currentSelection = 0;
+        const menuItems = document.querySelectorAll('.menu-item');
+        const gameboyShell = document.getElementById('gameboyShell');
+        const konamiOverlay = document.getElementById('konamiOverlay');
+        
+        // Konami code: ↑ ↑ ↓ ↓ ← → ← → B A
+        const konamiCode = ['up', 'up', 'down', 'down', 'left', 'right', 'left', 'right', 'b', 'a'];
+        let konamiIndex = 0;
+        
+        function updateSelection() {
+            menuItems.forEach((item, index) => {
+                if (index === currentSelection) {
+                    item.classList.add('selected');
+                    item.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                } else {
+                    item.classList.remove('selected');
+                }
+            });
+        }
+        
+        function checkKonami(input) {
+            if (input === konamiCode[konamiIndex]) {
+                konamiIndex++;
+                if (konamiIndex === konamiCode.length) {
+                    activateKonamiCode();
+                    konamiIndex = 0;
+                }
+            } else {
+                konamiIndex = 0;
+            }
+        }
+        
+        function activateKonamiCode() {
+            playPowerUpSound();
+            gameboyShell.classList.add('shake');
+            konamiOverlay.classList.add('active');
+            
+            setTimeout(() => {
+                konamiOverlay.classList.remove('active');
+                gameboyShell.classList.remove('shake');
+            }, 2000);
+        }
+        
+        // D-pad UP
+        document.getElementById('dpad-up').addEventListener('click', () => {
+            checkKonami('up');
+            if (currentSelection > 0) {
+                currentSelection--;
+                updateSelection();
+                playSound();
+            }
+        });
+        
+        // D-pad DOWN
+        document.getElementById('dpad-down').addEventListener('click', () => {
+            checkKonami('down');
+            if (currentSelection < menuItems.length - 1) {
+                currentSelection++;
+                updateSelection();
+                playSound();
+            }
+        });
+        
+        // D-pad LEFT
+        document.getElementById('dpad-left').addEventListener('click', () => {
+            checkKonami('left');
+            playSound();
+        });
+        
+        // D-pad RIGHT
+        document.getElementById('dpad-right').addEventListener('click', () => {
+            checkKonami('right');
+            playSound();
+        });
+        
+        // A button - select current item
+        document.getElementById('btn-a').addEventListener('click', () => {
+            checkKonami('a');
+            if (menuItems[currentSelection]) {
+                playSelectSound();
+                setTimeout(() => {
+                    window.location.href = menuItems[currentSelection].href;
+                }, 200);
+            }
+        });
+        
+        // B button
+        document.getElementById('btn-b').addEventListener('click', () => {
+            checkKonami('b');
+            playCancelSound();
+        });
+        
+        // Keyboard controls
+        document.addEventListener('keydown', (e) => {
+            switch(e.key) {
+                case 'ArrowUp':
+                case 'w':
+                case 'W':
+                    e.preventDefault();
+                    checkKonami('up');
+                    if (currentSelection > 0) {
+                        currentSelection--;
+                        updateSelection();
+                        playSound();
+                    }
+                    break;
+                case 'ArrowDown':
+                case 's':
+                case 'S':
+                    e.preventDefault();
+                    checkKonami('down');
+                    if (currentSelection < menuItems.length - 1) {
+                        currentSelection++;
+                        updateSelection();
+                        playSound();
+                    }
+                    break;
+                case 'ArrowLeft':
+                case 'a':
+                case 'A':
+                    e.preventDefault();
+                    checkKonami('left');
+                    playSound();
+                    break;
+                case 'ArrowRight':
+                case 'd':
+                case 'D':
+                    e.preventDefault();
+                    checkKonami('right');
+                    playSound();
+                    break;
+                case 'Enter':
+                case 'x':
+                case 'X':
+                    e.preventDefault();
+                    checkKonami('a');
+                    if (menuItems[currentSelection]) {
+                        playSelectSound();
+                        setTimeout(() => {
+                            window.location.href = menuItems[currentSelection].href;
+                        }, 200);
+                    }
+                    break;
+                case 'Escape':
+                case 'z':
+                case 'Z':
+                    e.preventDefault();
+                    checkKonami('b');
+                    playCancelSound();
+                    break;
+            }
+        });
+        
+        // Sound functions
+        function playSound() {
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.frequency.value = 600;
+            oscillator.type = 'square';
+            
+            gainNode.gain.setValueAtTime(0.05, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.05);
+            
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.05);
+        }
+        
+        function playSelectSound() {
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.frequency.value = 800;
+            oscillator.type = 'square';
+            
+            gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+            
+            oscillator.start(audioContext.currentTime);
+            oscillator.frequency.exponentialRampToValueAtTime(1200, audioContext.currentTime + 0.1);
+            oscillator.stop(audioContext.currentTime + 0.1);
+        }
+        
+        function playCancelSound() {
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.frequency.value = 400;
+            oscillator.type = 'square';
+            
+            gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.15);
+            
+            oscillator.start(audioContext.currentTime);
+            oscillator.frequency.exponentialRampToValueAtTime(200, audioContext.currentTime + 0.15);
+            oscillator.stop(audioContext.currentTime + 0.15);
+        }
+        
+        function playPowerUpSound() {
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.frequency.value = 400;
+            oscillator.type = 'square';
+            
+            gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+            
+            oscillator.start(audioContext.currentTime);
+            oscillator.frequency.exponentialRampToValueAtTime(1600, audioContext.currentTime + 0.5);
+            oscillator.stop(audioContext.currentTime + 0.5);
+        }
+        
+        // Initialize first selection
+        updateSelection();
+    </script>
 </body>
 </html>
